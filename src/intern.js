@@ -10,11 +10,11 @@ export const intern = {
   skills: ["JavaScript"]
 };
 
-export function gainXp(amount) {
-    intern.xp = intern.xp + amount;
+export function gainXp(player, amount) {
+    player.xp = player.xp + amount;
 
-    while (intern.xp >= intern.level * 100) {
-        intern.level = intern.level + 1;
+    while (player.xp >= player.level * 100) {
+        player.level = player.level + 1;
     }
 }
 
