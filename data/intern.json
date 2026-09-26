@@ -1,10 +1,9 @@
 {
   "name": "Gabriel",
   "role": "Intern",
-  "level": 5,
-  "xp": 450,
+  "level": 4,
+  "xp": 300,
   "skills": [
-    "JavaScript",
-    "Node.js"
+    "JavaScript"
   ]
 }
