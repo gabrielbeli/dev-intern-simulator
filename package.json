@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/express-server.js",
-    "test": "vitest"
+    "test": "vitest",
+    "test:run": "vitest run"
   },
   "keywords": [],
   "author": "",
