@@ -10,3 +10,10 @@ export async function addXpToIntern(amount) {
 
     return intern;
 }
+
+export async function getInternData() {
+    
+    const intern = await findIntern();
+
+    return intern;
+}

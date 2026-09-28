@@ -1,9 +1,14 @@
-import { loadIntern, saveIntern } from "../storage.js";
-import { addXpToIntern } from "../services/internService.js";
+import { addXpToIntern, getInternData } from "../services/internService.js";
 
 export async function getIntern(request, response) {
     try {
-        const intern = await loadIntern();
+        const intern = await getInternData();
+
+        if (!intern) {
+            return response.status(404).json({
+                message: "Intern not found"
+            });
+        }
 
         return response.status(200).json(intern);
 

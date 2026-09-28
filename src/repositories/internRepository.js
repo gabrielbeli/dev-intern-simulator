@@ -1,9 +1,19 @@
-import { loadIntern, saveIntern } from "../storage.js";
+import { getDatabase } from "../config/database.js";
 import { Intern } from "../models/Intern.js";
 
 export async function findIntern() {
 
-    const data = await loadIntern();
+    const database = getDatabase();
+
+    const interns = database.collection("interns");
+
+    const data = await interns.findOne({
+        name: "Gabriel"
+    });
+
+    if (!data) {
+        return null;
+    }
     
     return new Intern(
         data.name,
@@ -16,7 +26,20 @@ export async function findIntern() {
 
 export async function updateIntern(intern) {
     
-    await saveIntern(intern);
+    const database = getDatabase();
+
+    const interns = database.collection("interns");
+
+    await interns.updateOne(
+        { name: intern.name },
+        { $set: {
+            role: intern.role,
+            level: intern.level,
+            xp: intern.xp,
+            skills: intern.skills
+            }
+        }
+    );
 
     return intern;
 }
