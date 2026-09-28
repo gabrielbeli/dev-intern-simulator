@@ -1,6 +1,7 @@
 export class Intern {
     
-    constructor(name, role = "Intern", level = 1, xp = 0, skills = ["JavaScript"]) {
+    constructor(id, name, role = "Intern", level = 1, xp = 0, skills = ["JavaScript"]) {
+        this.id = id;
         this.name = name;
         this.role = role;
         this.level = level;

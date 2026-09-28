@@ -16,6 +16,7 @@ export async function findIntern() {
     }
     
     return new Intern(
+        data._id,
         data.name,
         data.role,
         data.level,
@@ -31,8 +32,9 @@ export async function updateIntern(intern) {
     const interns = database.collection("interns");
 
     await interns.updateOne(
-        { name: intern.name },
+        { _id: intern.id },
         { $set: {
+            name: intern.name,
             role: intern.role,
             level: intern.level,
             xp: intern.xp,
