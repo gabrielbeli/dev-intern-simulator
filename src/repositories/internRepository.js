@@ -1,14 +1,15 @@
 import { getDatabase } from "../config/database.js";
 import { Intern } from "../models/Intern.js";
+import { ObjectId } from "mongodb";
 
-export async function findIntern() {
+export async function findIntern(id) {
 
     const database = getDatabase();
 
     const interns = database.collection("interns");
 
     const data = await interns.findOne({
-        name: "Gabriel"
+        _id: new ObjectId(id)
     });
 
     if (!data) {

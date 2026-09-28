@@ -1,8 +1,18 @@
 import { addXpToIntern, getInternData } from "../services/internService.js";
+import { ObjectId } from "mongodb";
 
 export async function getIntern(request, response) {
     try {
-        const intern = await getInternData();
+        
+        const { id } = request.params;
+
+        if (!ObjectId.isValid(id)) {
+            return response.status(400).json({
+                message: "Invalid intern id"
+            });
+        }
+        
+        const intern = await getInternData(id);
 
         if (!intern) {
             return response.status(404).json({

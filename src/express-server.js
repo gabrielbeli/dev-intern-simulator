@@ -1,12 +1,15 @@
 import express from "express";
 import { internRoutes } from "./routes/internRoutes.js";
 import { connectToDatabase } from "./config/database.js";
+import taskRoutes from "./routes/taskRoutes.js";
 
 const app = express();
 
 app.use(express.json());
 
 app.use("/intern", internRoutes);
+
+app.use("/tasks", taskRoutes);
 
 async function startServer() {
     try {

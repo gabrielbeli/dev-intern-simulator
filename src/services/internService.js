@@ -11,9 +11,9 @@ export async function addXpToIntern(amount) {
     return intern;
 }
 
-export async function getInternData() {
+export async function getInternData(id) {
     
-    const intern = await findIntern();
+    const intern = await findIntern(id);
 
     return intern;
 }
