@@ -1,9 +1,14 @@
 import express from "express";
+import cors from "cors";
 import { internRoutes } from "./routes/internRoutes.js";
 import { connectToDatabase } from "./config/database.js";
 import taskRoutes from "./routes/taskRoutes.js";
 
 const app = express();
+
+app.use(cors({
+  origin: "http://localhost:5173"
+}));
 
 app.use(express.json());
 
