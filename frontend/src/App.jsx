@@ -2,6 +2,7 @@ import './App.css'
 import { useEffect, useState } from "react"
 import InternCard from './components/InternCard'
 import TaskList from "./components/TaskList.jsx"
+import { getIntern, getTasks, completeTask } from "./api/simulatorApi.js"
 
 function App() {
   const [intern, setIntern] = useState(null)
@@ -10,41 +11,31 @@ function App() {
 
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [taskStatus, setTaskStatus] = useState("all")
+  const [completingTaskId, setCompletingTaskId] = useState(null)
 
   const [tasks, setTasks] = useState([])
 
   useEffect(() => {
     async function loadIntern() {
       try {
-        const response = await fetch(
-          `http://localhost:3000/intern/${internId}`
-        )
-
-        if (!response.ok) {
-        throw new Error("Could not load intern")
-        }
-
-        const data = await response.json()
+        const data = await getIntern(internId)
 
         setIntern(data)
       } catch (error) {
-          setError(error.message)
-        } finally {
-          setLoading(false)
-        }
+        setError(error.message)
+      } finally {
+        setLoading(false)
+      }
     }
 
+    loadIntern()
+  }, [])
+
+  useEffect(() => {
     async function loadTasks() {
       try {
-        const response = await fetch(
-          `http://localhost:3000/intern/${internId}/tasks`
-        )
-
-        if (!response.ok) {
-          throw new Error("Could not load tasks")
-        }
-
-        const data = await response.json()
+        const data = await getTasks(internId, taskStatus)
 
         setTasks(data)
       } catch (error) {
@@ -52,38 +43,30 @@ function App() {
       }
     }
 
-    loadIntern()
     loadTasks()
-  }, [])
+  }, [taskStatus])
 
   async function handleCompleteTask(taskId) {
-  try {
-    const response = await fetch(
-      `http://localhost:3000/tasks/${taskId}/complete`,
-      {
-        method: "PATCH"
-      }
-    )
+    try {
+      setCompletingTaskId(taskId)
+      setError(null)
 
-    if (!response.ok) {
-      throw new Error("Could not complete task")
-    }
+      const data = await completeTask(taskId)
 
-    const data = await response.json()
+      setIntern(data.intern)
 
-    setIntern(data.intern)
-
-    setTasks(currentTasks =>
-      currentTasks.map(task =>
-        task.id === data.task.id
-          ? data.task
-          : task
+      const updatedTasks = await getTasks(
+        internId,
+        taskStatus
       )
-    )
-  } catch (error) {
-    setError(error.message)
+
+      setTasks(updatedTasks)
+    } catch (error) {
+      setError(error.message)
+      } finally {
+      setCompletingTaskId(null)
+    }
   }
-}
 
   return (
     <div>
@@ -101,9 +84,24 @@ function App() {
         />
       )}
 
+      <div>
+        <button onClick={() => setTaskStatus("all")}>
+          All
+        </button>
+
+        <button onClick={() => setTaskStatus("pending")}>
+          Pending
+        </button>
+
+        <button onClick={() => setTaskStatus("completed")}>
+          Completed
+        </button>
+      </div>
+
       <TaskList 
         tasks={tasks}
-        onComplete={handleCompleteTask} 
+        onComplete={handleCompleteTask}
+        completingTaskId={completingTaskId}
       />
     </div>
   )

@@ -1,4 +1,4 @@
-function TaskList({ tasks, onComplete }) {
+function TaskList({ tasks, onComplete, completingTaskId }) {
   return (
     <div>
       <h2>Tasks</h2>
@@ -10,10 +10,15 @@ function TaskList({ tasks, onComplete }) {
           <p>XP: {task.xpReward}</p>
           
           {task.status === "pending" && (
-            <button onClick={() => onComplete(task.id)}>
-                Complete Task
+            <button
+              onClick={() => onComplete(task.id)}
+              disabled={completingTaskId === task.id}
+            >
+              {completingTaskId === task.id
+                ? "Completing..."
+                : "Complete Task"}
             </button>
-            )}
+)}
         </div>
       ))}
     </div>
