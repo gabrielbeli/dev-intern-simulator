@@ -1,4 +1,4 @@
-import { BADGES } from "../config/gameConfig";
+import { BADGES } from "../config/gameConfig.js";
 
 export class Player {
     constructor(
@@ -45,8 +45,8 @@ export class Player {
         this.usedTimeBlocks = usedTimeBlocks;
         this.coffeeCount = coffeeCount;
 
-        this.badgeScores = badgeScores;        
-        this.badgeRecency = badgeRecency;        
+        this.badgeScores = badgeScores;
+        this.badgeRecency = badgeRecency;
 
         this.ending = ending;
         this.postGame = postGame;
@@ -67,7 +67,7 @@ export class Player {
         }
 
         this.badgeScores[badge] += amount;
-        
+
         this.badgeRecency = [
             badge,
             ...this.badgeRecency.filter(
@@ -77,22 +77,50 @@ export class Player {
     }
 
     getDominantBadges(limit = 3) {
-        
+
         return Object.entries(this.badgeScores)
-        .filter(([, score]) => score > 0)
-        .sort(([badgeA, scoreA], [badgeB, scoreB]) => {
-        
-            if (scoreA !== scoreB) {
-                return scoreB - scoreA;
-            }
+            .filter(([, score]) => score > 0)
+            .sort(([badgeA, scoreA], [badgeB, scoreB]) => {
 
-            const indexA = this.badgeRecency.indexOf(badgeA);
-            const indexB = this.badgeRecency.indexOf(badgeB);
+                if (scoreA !== scoreB) {
+                    return scoreB - scoreA;
+                }
 
-            return indexA - indexB;
-        })
-        .slice(0, limit)
-        .map(([badge]) => badge);
+                const indexA = this.badgeRecency.indexOf(badgeA);
+                const indexB = this.badgeRecency.indexOf(badgeB);
+
+                return indexA - indexB;
+            })
+            .slice(0, limit)
+            .map(([badge]) => badge);
+    }
+
+    addXp(amount) {
+        if (amount <= 0) {
+            throw new Error("XP amount must be greater than zero");
+        }
+
+        this.xp += amount;
+    }
+
+    spendStamina(amount) {
+        if (amount <= 0) {
+            throw new Error("Stamina cost must be greater than zero");
+        }
+
+        if (amount > this.stamina) {
+            throw new Error("Not enough stamina");
+        }
+
+        this.stamina -= amount;
+    }
+
+    useTimeBlocks(amount) {
+        if (!Number.isInteger(amount) || amount <= 0) {
+            throw new Error("Time blocks must be a positive integer");
+        }
+
+        this.usedTimeBlocks += amount;
     }
 }
 

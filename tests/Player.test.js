@@ -85,6 +85,71 @@ it("should use recency to break badge score ties", () => {
     expect(player.getDominantBadges()).toEqual([
         "inclusion",
         "communication",
-        "impact" 
+        "impact"
     ]);
+});
+
+it("should gain XP", () => {
+    const player = new Player(
+        null,
+        null,
+        "Gabriel",
+        "avatar-1"
+    );
+
+    player.addXp(50);
+
+    expect(player.xp).toBe(50);
+});
+
+it("should spend stamina", () => {
+    const player = new Player(
+        null,
+        null,
+        "Gabriel",
+        "avatar-1"
+    );
+
+    player.spendStamina(25);
+
+    expect(player.stamina).toBe(75);
+});
+
+it("should allow stamina to reach zero", () => {
+    const player = new Player(
+        null,
+        null,
+        "Gabriel",
+        "avatar-1"
+    );
+
+    player.spendStamina(100);
+
+    expect(player.stamina).toBe(0);
+});
+
+it("should reject spending more stamina than available", () => {
+    const player = new Player(
+        null,
+        null,
+        "Gabriel",
+        "avatar-1"
+    );
+
+    expect(() => {
+        player.spendStamina(101);
+    }).toThrow("Not enough stamina");
+});
+
+it("should use time blocks even beyond the normal workday", () => {
+    const player = new Player(
+        null,
+        null,
+        "Gabriel",
+        "avatar-1"
+    );
+
+    player.useTimeBlocks(9);
+
+    expect(player.usedTimeBlocks).toBe(9);
 });
