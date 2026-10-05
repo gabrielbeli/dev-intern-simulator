@@ -1,8 +1,9 @@
 import { findPlayerById, savePlayer } from "../repositories/playerRepository.js";
-import { findTaskDefinitionById } from "../repositories/taskDefinitionRepository.js";
-import { findTaskProgress, saveTaskProgress } from "../repositories/taskProgressRepository.js";
+import { findTaskDefinitionById, findTaskDefinitionsByRole } from "../repositories/taskDefinitionRepository.js";
+import { findTaskProgress, saveTaskProgress, findTaskProgressByPlayer } from "../repositories/taskProgressRepository.js";
 import { resolveTask } from "./taskResolutionService.js";
-
+import { canPromotePlayer, getRoleConfig } from "./roleProgressionService.js";
+import { getDatabaseClient } from "../config/database.js";
 
 export async function completeTaskForPlayer(
     playerId,
@@ -36,11 +37,42 @@ export async function completeTaskForPlayer(
         choiceId
     );
 
-    await savePlayer(updatedPlayer);
-    await saveTaskProgress(progress);
+    const client = getDatabaseClient();
+    const session = client.startSession();
+
+    try {
+        await session.withTransaction(async () => {
+            await savePlayer(updatedPlayer, session);
+            await saveTaskProgress(progress, session);
+        });
+    } finally {
+        await session.endSession();
+    }
+
+    const roleTasks = await findTaskDefinitionsByRole(
+        updatedPlayer.role
+    );
+
+    const playerProgress = await findTaskProgressByPlayer(
+        updatedPlayer.id.toString()
+    );
+
+    const promotionAvailable = canPromotePlayer(
+        updatedPlayer,
+        roleTasks,
+        playerProgress
+    );
+
+    const roleConfig = getRoleConfig(updatedPlayer.role);
 
     return {
         player: updatedPlayer,
-        progress
+        progress,
+        promotion: {
+            available: promotionAvailable,
+            nextRole: promotionAvailable
+                ? roleConfig.nextRole
+                : null
+        }
     };
 }

@@ -79,3 +79,15 @@ export async function saveTaskDefinition(task) {
 
     return task;
 }
+
+export async function findTaskDefinitionsByRole(role) {
+    const database = getDatabase();
+
+    const taskDefinitions = database.collection("taskDefinitions");
+
+    const data = await taskDefinitions
+        .find({ role })
+        .toArray();
+
+    return data.map(toTaskDefinition);
+}

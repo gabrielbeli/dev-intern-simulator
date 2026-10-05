@@ -41,10 +41,11 @@ export async function findPlayerById(playerId) {
     return toPlayer(data);
 }
 
-export async function savePlayer(player) {
+export async function savePlayer(player, session = null) {
     const database = getDatabase();
 
     const players = database.collection("players");
+    const options = session ? { session } : {};
 
     const playerData = {
         userId: player.userId,
@@ -73,7 +74,7 @@ export async function savePlayer(player) {
     };
 
     if (!player.id) {
-        const result = await players.insertOne(playerData);
+        const result = await players.insertOne(playerData, options);
 
         player.id = result.insertedId;
 
@@ -84,7 +85,8 @@ export async function savePlayer(player) {
         { _id: player.id },
         {
             $set: playerData
-        }
+        },
+        options
     );
 
     return player;
