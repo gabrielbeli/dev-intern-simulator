@@ -1,13 +1,20 @@
 import { TaskProgress } from "../models/TaskProgress.js";
+import { shouldForceGoHome } from "./workdayService.js"
+import { applyCoffeeXpModifier } from "./coffeeService.js";
 
 export function resolveTask(player, task, choiceId) {
     const choice = task.getChoice(choiceId);
 
     const dominantBadges = player.getDominantBadges();
 
-    const xpEarned = task.calculateXp(
+    const coherentXp = task.calculateXp(
         choiceId,
         dominantBadges
+    );
+
+    const xpEarned = applyCoffeeXpModifier(
+        player,
+        coherentXp
     );
 
     player.spendStamina(task.staminaCost);
@@ -30,8 +37,11 @@ export function resolveTask(player, task, choiceId) {
         player.day
     );
 
+    const forcedDayEnd = shouldForceGoHome(player);
+
     return {
         player,
-        progress
+        progress,
+        forcedDayEnd
     };
 }

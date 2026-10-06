@@ -71,5 +71,107 @@ describe("resolveTask", () => {
             delivery: 2,
             impact: 1
         });
+
+        expect(result.forcedDayEnd).toBe(false);
     });
+
+    it("should report a forced day end when stamina reaches zero", () => {
+        const player = new Player(
+            "player-1",
+            null,
+            "Gabriel",
+            "avatar-1"
+        );
+
+        player.stamina = 15;
+
+        const task = new TaskDefinition(
+            "task-1",
+            "Critical Bug",
+            "A critical issue needs attention.",
+            "Intern",
+            true,
+            "easy",
+            15,
+            1,
+            30,
+            null,
+            "npc",
+            "alex",
+            {},
+            [
+                {
+                    id: "A",
+                    text: "Handle the issue.",
+                    badgeImpact: {
+                        [BADGES.DELIVERY]: 2,
+                        [BADGES.IMPACT]: 1
+                    }
+                }
+            ]
+        );
+
+        const result = resolveTask(
+            player,
+            task,
+            "A"
+        );
+
+        expect(result.player.stamina).toBe(0);
+        expect(result.forcedDayEnd).toBe(true);
+
+        expect(result.player.day).toBe(1);
+        expect(result.player.exhausted).toBe(false);
+    });
+});
+
+it("should reduce task XP when player has coffee overuse penalty", () => {
+  const player = new Player(
+    "player-1",
+    null,
+    "Gabriel",
+    "avatar-1"
+  );
+
+  player.coffeeCount = 6;
+
+  player.addBadgePoints(
+    BADGES.DELIVERY,
+    10
+  );
+
+  const task = new TaskDefinition(
+    "task-1",
+    "Critical Bug",
+    "A critical issue needs attention.",
+    "Intern",
+    true,
+    "easy",
+    15,
+    1,
+    40,
+    null,
+    "npc",
+    "alex",
+    {},
+    [
+      {
+        id: "A",
+        text: "Solve it quickly.",
+        badgeImpact: {
+          [BADGES.DELIVERY]: 2,
+          [BADGES.IMPACT]: 1
+        }
+      }
+    ]
+  );
+
+  const result = resolveTask(
+    player,
+    task,
+    "A"
+  );
+
+  expect(result.progress.xpEarned).toBe(33);
+  expect(result.player.xp).toBe(33);
 });

@@ -103,6 +103,18 @@ export class Player {
         this.xp += amount;
     }
 
+    spendXp(amount) {
+        if (amount <= 0) {
+            throw new Error("XP cost must be greater than zero");
+        }
+
+        if (amount > this.xp) {
+            throw new Error("Not enough XP");
+        }
+
+        this.xp -= amount;
+    }
+
     spendStamina(amount) {
         if (amount <= 0) {
             throw new Error("Stamina cost must be greater than zero");

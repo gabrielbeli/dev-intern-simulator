@@ -153,3 +153,50 @@ it("should use time blocks even beyond the normal workday", () => {
 
     expect(player.usedTimeBlocks).toBe(9);
 });
+
+it("should spend XP", () => {
+  const player = new Player(
+    "player-1",
+    null,
+    "Gabriel",
+    "avatar-1"
+  );
+
+  player.xp = 50;
+
+  player.spendXp(5);
+
+  expect(player.xp).toBe(45);
+});
+
+it("should reject spending more XP than available", () => {
+  const player = new Player(
+    "player-1",
+    null,
+    "Gabriel",
+    "avatar-1"
+  );
+
+  player.xp = 3;
+
+  expect(() => {
+    player.spendXp(5);
+  }).toThrow("Not enough XP");
+
+  expect(player.xp).toBe(3);
+});
+
+it("should reject invalid XP cost", () => {
+  const player = new Player(
+    "player-1",
+    null,
+    "Gabriel",
+    "avatar-1"
+  );
+
+  expect(() => {
+    player.spendXp(0);
+  }).toThrow(
+    "XP cost must be greater than zero"
+  );
+});

@@ -31,7 +31,12 @@ export async function completeTaskForPlayer(
         throw new Error("Task not found");
     }
 
-    const { player: updatedPlayer, progress } = resolveTask(
+    const {
+        player: updatedPlayer,
+        progress,
+        forcedDayEnd
+
+    } = resolveTask(
         player,
         task,
         choiceId
@@ -68,11 +73,15 @@ export async function completeTaskForPlayer(
     return {
         player: updatedPlayer,
         progress,
+
         promotion: {
             available: promotionAvailable,
             nextRole: promotionAvailable
                 ? roleConfig.nextRole
                 : null
+        },
+        dayEnd: {
+            forced: forcedDayEnd
         }
     };
 }

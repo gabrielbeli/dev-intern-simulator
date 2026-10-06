@@ -74,6 +74,9 @@ describe("completeTaskForPlayer", () => {
         vi.clearAllMocks();
 
         getDatabaseClient.mockReturnValue(client);
+
+        saveTaskProgress.mockResolvedValue(undefined);
+        savePlayer.mockResolvedValue(undefined);
     });
 
     it("should complete a new task and persist player and progress", async () => {
@@ -113,6 +116,10 @@ describe("completeTaskForPlayer", () => {
         expect(result.promotion).toEqual({
             available: false,
             nextRole: null
+        });
+
+        expect(result.dayEnd).toEqual({
+            forced: false
         });
 
         expect(savePlayer).toHaveBeenCalledWith(player, session);
@@ -264,6 +271,48 @@ describe("completeTaskForPlayer", () => {
         );
 
         expect(session.endSession).toHaveBeenCalled();
+    });
+
+    it("should report a forced day end when completing the task exhausts the player", async () => {
+        const player = new Player(
+            "player-1",
+            null,
+            "Gabriel",
+            "avatar-1"
+        );
+
+        player.stamina = 25;
+
+        const task = createTask();
+
+        findTaskProgress.mockResolvedValue(null);
+        findPlayerById.mockResolvedValue(player);
+        findTaskDefinitionById.mockResolvedValue(task);
+
+        findTaskDefinitionsByRole.mockResolvedValue([
+            task
+        ]);
+
+        findTaskProgressByPlayer.mockResolvedValue([
+            {
+                taskId: "task-1"
+            }
+        ]);
+
+        const result = await completeTaskForPlayer(
+            "player-1",
+            "task-1",
+            "A"
+        );
+
+        expect(result.player.stamina).toBe(0);
+
+        expect(result.dayEnd).toEqual({
+            forced: true
+        });
+
+        expect(result.player.day).toBe(1);
+        expect(result.player.exhausted).toBe(false);
     });
 
 })

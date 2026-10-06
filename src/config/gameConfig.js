@@ -46,3 +46,19 @@ export const ROLES = {
     nextRole: null
   }
 };
+
+export const WORKDAY = {
+  NORMAL_TIME_BLOCKS: 8,
+
+  MAX_STAMINA: 100,
+
+  NORMAL_NEXT_DAY_STAMINA: 100,
+  EXHAUSTED_NEXT_DAY_STAMINA: 70
+};
+
+export const COFFEE = {
+  STAMINA_RECOVERY: 20,
+  XP_COST: 5,
+  DAILY_LIMIT: 5,
+  OVERUSE_XP_MULTIPLIER: 0.75
+};
