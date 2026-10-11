@@ -94,11 +94,7 @@ describe("completeTaskForPlayer", () => {
         findTaskDefinitionById.mockResolvedValue(task);
         findTaskDefinitionsByRole.mockResolvedValue([task]);
 
-        findTaskProgressByPlayer.mockResolvedValue([
-            {
-                taskId: "task-1"
-            }
-        ]);
+        findTaskProgressByPlayer.mockResolvedValue([]);
 
         const result = await completeTaskForPlayer(
             "player-1",
@@ -212,11 +208,7 @@ describe("completeTaskForPlayer", () => {
             task
         ]);
 
-        findTaskProgressByPlayer.mockResolvedValue([
-            {
-                taskId: "task-1"
-            }
-        ]);
+        findTaskProgressByPlayer.mockResolvedValue([]);
 
         const result = await completeTaskForPlayer(
             "player-1",
@@ -293,11 +285,7 @@ describe("completeTaskForPlayer", () => {
             task
         ]);
 
-        findTaskProgressByPlayer.mockResolvedValue([
-            {
-                taskId: "task-1"
-            }
-        ]);
+        findTaskProgressByPlayer.mockResolvedValue([]);
 
         const result = await completeTaskForPlayer(
             "player-1",
@@ -313,6 +301,75 @@ describe("completeTaskForPlayer", () => {
 
         expect(result.player.day).toBe(1);
         expect(result.player.exhausted).toBe(false);
+    });
+
+    it("should reject a task that is not unlocked", async () => {
+        const player = new Player(
+            "player-1",
+            null,
+            "Gabriel",
+            "avatar-1"
+        );
+
+        const task = createTask();
+
+        task.requirements = {
+            completedTasks: [
+                "task-required"
+            ]
+        };
+
+        findTaskProgress.mockResolvedValue(null);
+        findPlayerById.mockResolvedValue(player);
+        findTaskDefinitionById.mockResolvedValue(task);
+
+        findTaskProgressByPlayer.mockResolvedValue([]);
+
+        await expect(
+            completeTaskForPlayer(
+                "player-1",
+                "task-1",
+                "A"
+            )
+        ).rejects.toThrow(
+            "Task is not available for player"
+        );
+
+        expect(savePlayer).not.toHaveBeenCalled();
+        expect(saveTaskProgress).not.toHaveBeenCalled();
+    });
+
+    it("should reject starting an available task without enough stamina", async () => {
+        const player = new Player(
+            "player-1",
+            null,
+            "Gabriel",
+            "avatar-1"
+        );
+
+        player.stamina = 10;
+
+        const task = createTask();
+
+        findTaskProgress.mockResolvedValue(null);
+        findPlayerById.mockResolvedValue(player);
+        findTaskDefinitionById.mockResolvedValue(task);
+
+        findTaskProgressByPlayer.mockResolvedValue([]);
+
+        await expect(
+            completeTaskForPlayer(
+                "player-1",
+                "task-1",
+                "A"
+            )
+        ).rejects.toThrow(
+            "Not enough stamina to start task"
+        );
+
+        expect(player.stamina).toBe(10);
+        expect(savePlayer).not.toHaveBeenCalled();
+        expect(saveTaskProgress).not.toHaveBeenCalled();
     });
 
 })

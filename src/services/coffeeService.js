@@ -25,11 +25,11 @@ export function drinkCoffee(player) {
 }
 
 export function applyCoffeeXpModifier(player, xp) {
-  if (!hasCoffeeOverusePenalty(player)) {
-    return xp;
-  }
+    if (!hasCoffeeOverusePenalty(player)) {
+        return xp;
+    }
 
-  return Math.round(
-    xp * COFFEE.OVERUSE_XP_MULTIPLIER
-  );
+    return Math.round(
+        xp * COFFEE.OVERUSE_XP_MULTIPLIER
+    );
 }

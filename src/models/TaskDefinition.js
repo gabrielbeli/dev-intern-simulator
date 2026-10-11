@@ -14,7 +14,14 @@ export class TaskDefinition {
         floor,
         sourceType,
         sourceId,
-        requirements = {},
+        requirements = {
+            completedTasks: ["task-1", "task-2"],
+
+            badgeScores: {
+                communication: 5,
+                inclusion: 3
+            }
+        },
         choices = []
     ) {
         this.id = id;

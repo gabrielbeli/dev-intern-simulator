@@ -62,3 +62,10 @@ export const COFFEE = {
   DAILY_LIMIT: 5,
   OVERUSE_XP_MULTIPLIER: 0.75
 };
+
+export const NPCS = {
+  ALEX: {
+    id: "alex",
+    allowedFloors: [1, 2]
+  }
+};

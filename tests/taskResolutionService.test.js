@@ -126,52 +126,52 @@ describe("resolveTask", () => {
 });
 
 it("should reduce task XP when player has coffee overuse penalty", () => {
-  const player = new Player(
-    "player-1",
-    null,
-    "Gabriel",
-    "avatar-1"
-  );
+    const player = new Player(
+        "player-1",
+        null,
+        "Gabriel",
+        "avatar-1"
+    );
 
-  player.coffeeCount = 6;
+    player.coffeeCount = 6;
 
-  player.addBadgePoints(
-    BADGES.DELIVERY,
-    10
-  );
+    player.addBadgePoints(
+        BADGES.DELIVERY,
+        10
+    );
 
-  const task = new TaskDefinition(
-    "task-1",
-    "Critical Bug",
-    "A critical issue needs attention.",
-    "Intern",
-    true,
-    "easy",
-    15,
-    1,
-    40,
-    null,
-    "npc",
-    "alex",
-    {},
-    [
-      {
-        id: "A",
-        text: "Solve it quickly.",
-        badgeImpact: {
-          [BADGES.DELIVERY]: 2,
-          [BADGES.IMPACT]: 1
-        }
-      }
-    ]
-  );
+    const task = new TaskDefinition(
+        "task-1",
+        "Critical Bug",
+        "A critical issue needs attention.",
+        "Intern",
+        true,
+        "easy",
+        15,
+        1,
+        40,
+        null,
+        "npc",
+        "alex",
+        {},
+        [
+            {
+                id: "A",
+                text: "Solve it quickly.",
+                badgeImpact: {
+                    [BADGES.DELIVERY]: 2,
+                    [BADGES.IMPACT]: 1
+                }
+            }
+        ]
+    );
 
-  const result = resolveTask(
-    player,
-    task,
-    "A"
-  );
+    const result = resolveTask(
+        player,
+        task,
+        "A"
+    );
 
-  expect(result.progress.xpEarned).toBe(33);
-  expect(result.player.xp).toBe(33);
+    expect(result.progress.xpEarned).toBe(33);
+    expect(result.player.xp).toBe(33);
 });

@@ -18,6 +18,20 @@ async function createIndexes() {
     );
 
     console.log("Indexes created successfully");
+
+    const dailyWorldStates = database.collection(
+        "dailyWorldStates"
+    );
+
+    await dailyWorldStates.createIndex(
+        {
+            playerId: 1,
+            day: 1
+        },
+        {
+            unique: true
+        }
+    );
 }
 
 createIndexes();

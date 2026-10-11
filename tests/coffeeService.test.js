@@ -103,23 +103,23 @@ describe("hasCoffeeOverusePenalty", () => {
 });
 
 describe("applyCoffeeXpModifier", () => {
-  it("should keep normal XP when coffee limit was not exceeded", () => {
-    const player = {
-      coffeeCount: 5
-    };
+    it("should keep normal XP when coffee limit was not exceeded", () => {
+        const player = {
+            coffeeCount: 5
+        };
 
-    expect(
-      applyCoffeeXpModifier(player, 50)
-    ).toBe(50);
-  });
+        expect(
+            applyCoffeeXpModifier(player, 50)
+        ).toBe(50);
+    });
 
-  it("should reduce XP after coffee overuse", () => {
-    const player = {
-      coffeeCount: 6
-    };
+    it("should reduce XP after coffee overuse", () => {
+        const player = {
+            coffeeCount: 6
+        };
 
-    expect(
-      applyCoffeeXpModifier(player, 50)
-    ).toBe(38);
-  });
+        expect(
+            applyCoffeeXpModifier(player, 50)
+        ).toBe(38);
+    });
 });

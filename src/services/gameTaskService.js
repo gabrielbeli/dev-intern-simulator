@@ -4,6 +4,7 @@ import { findTaskProgress, saveTaskProgress, findTaskProgressByPlayer } from "..
 import { resolveTask } from "./taskResolutionService.js";
 import { canPromotePlayer, getRoleConfig } from "./roleProgressionService.js";
 import { getDatabaseClient } from "../config/database.js";
+import { isTaskUnlocked, canStartTask } from "./taskAvailabilityService.js";
 
 export async function completeTaskForPlayer(
     playerId,
@@ -29,6 +30,28 @@ export async function completeTaskForPlayer(
 
     if (!task) {
         throw new Error("Task not found");
+    }
+
+    const playerProgress = await findTaskProgressByPlayer(
+        playerId
+    );
+
+    if (
+        !isTaskUnlocked(
+            player,
+            task,
+            playerProgress
+        )
+    ) {
+        throw new Error(
+            "Task is not available for player"
+        );
+    }
+
+    if (!canStartTask(player, task)) {
+        throw new Error(
+            "Not enough stamina to start task"
+        );
     }
 
     const {
@@ -58,14 +81,16 @@ export async function completeTaskForPlayer(
         updatedPlayer.role
     );
 
-    const playerProgress = await findTaskProgressByPlayer(
-        updatedPlayer.id.toString()
-    );
+
+    const updatedPlayerProgress = [
+        ...playerProgress,
+        progress
+    ];
 
     const promotionAvailable = canPromotePlayer(
         updatedPlayer,
         roleTasks,
-        playerProgress
+        updatedPlayerProgress
     );
 
     const roleConfig = getRoleConfig(updatedPlayer.role);
