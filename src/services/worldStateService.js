@@ -26,3 +26,16 @@ export function createDailyWorldState(
 
     return worldState;
 }
+
+export function resolveTaskFloor(
+    task,
+    worldState
+) {
+    if (task.sourceType === "npc") {
+        return worldState.getNpcFloor(
+            task.sourceId
+        );
+    }
+
+    return task.floor;
+}

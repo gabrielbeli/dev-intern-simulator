@@ -66,6 +66,9 @@ export const COFFEE = {
 export const NPCS = {
   ALEX: {
     id: "alex",
+    name: "Alex",
     allowedFloors: [1, 2]
   }
 };
+
+export const FLOORS = [1, 2, 3];

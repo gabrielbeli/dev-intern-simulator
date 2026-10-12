@@ -11,3 +11,13 @@ export function getNpcConfig(npcId) {
 
     return npc;
 }
+
+export function getNpcsForFloor(
+    worldState,
+    floor
+) {
+    return Object.values(NPCS).filter(
+        npc =>
+            worldState.getNpcFloor(npc.id) === floor
+    );
+}
