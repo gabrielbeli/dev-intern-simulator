@@ -155,48 +155,88 @@ it("should use time blocks even beyond the normal workday", () => {
 });
 
 it("should spend XP", () => {
-  const player = new Player(
-    "player-1",
-    null,
-    "Gabriel",
-    "avatar-1"
-  );
+    const player = new Player(
+        "player-1",
+        null,
+        "Gabriel",
+        "avatar-1"
+    );
 
-  player.xp = 50;
+    player.xp = 50;
 
-  player.spendXp(5);
+    player.spendXp(5);
 
-  expect(player.xp).toBe(45);
+    expect(player.xp).toBe(45);
 });
 
 it("should reject spending more XP than available", () => {
-  const player = new Player(
-    "player-1",
-    null,
-    "Gabriel",
-    "avatar-1"
-  );
+    const player = new Player(
+        "player-1",
+        null,
+        "Gabriel",
+        "avatar-1"
+    );
 
-  player.xp = 3;
+    player.xp = 3;
 
-  expect(() => {
-    player.spendXp(5);
-  }).toThrow("Not enough XP");
+    expect(() => {
+        player.spendXp(5);
+    }).toThrow("Not enough XP");
 
-  expect(player.xp).toBe(3);
+    expect(player.xp).toBe(3);
 });
 
 it("should reject invalid XP cost", () => {
-  const player = new Player(
-    "player-1",
-    null,
-    "Gabriel",
-    "avatar-1"
-  );
+    const player = new Player(
+        "player-1",
+        null,
+        "Gabriel",
+        "avatar-1"
+    );
 
-  expect(() => {
-    player.spendXp(0);
-  }).toThrow(
-    "XP cost must be greater than zero"
-  );
+    expect(() => {
+        player.spendXp(0);
+    }).toThrow(
+        "XP cost must be greater than zero"
+    );
+});
+
+it("should start with the four default avatars unlocked", () => {
+    const player = new Player(
+        "player-1",
+        null,
+        "Gabriel",
+        "avatar-1"
+    );
+
+    expect(player.unlockedAvatarIds).toEqual([
+        "avatar-1",
+        "avatar-2",
+        "avatar-3",
+        "avatar-4"
+    ]);
+
+    expect(player.secretEnding).toBe(null);
+});
+
+it("should unlock a new avatar without duplicates", () => {
+    const player = new Player(
+        "player-1",
+        null,
+        "Gabriel",
+        "avatar-1"
+    );
+
+    player.unlockAvatar("avatar-5");
+    player.unlockAvatar("avatar-5");
+
+    expect(
+        player.unlockedAvatarIds
+    ).toContain("avatar-5");
+
+    expect(
+        player.unlockedAvatarIds.filter(
+            avatarId => avatarId === "avatar-5"
+        )
+    ).toHaveLength(1);
 });

@@ -1,7 +1,8 @@
 function meetsRequirements(
     player,
     requirements,
-    completedTaskIds
+    completedTaskIds,
+    ignoreBadgeScores = false
 ) {
     const requiredTasks =
         requirements?.completedTasks ?? [];
@@ -13,6 +14,10 @@ function meetsRequirements(
 
     if (!completedRequiredTasks) {
         return false;
+    }
+
+    if (ignoreBadgeScores) {
+        return true;
     }
 
     const requiredBadgeScores =
@@ -35,7 +40,10 @@ export function isTaskUnlocked(
     task,
     taskProgress
 ) {
-    if (task.role !== player.role) {
+    if (
+        !player.postGame &&
+        task.role !== player.role
+    ) {
         return false;
     }
 
@@ -53,7 +61,8 @@ export function isTaskUnlocked(
         !meetsRequirements(
             player,
             task.requirements,
-            completedTaskIds
+            completedTaskIds,
+            player.postGame
         )
     ) {
         return false;
@@ -68,7 +77,8 @@ export function isTaskUnlocked(
                 meetsRequirements(
                     player,
                     requirements,
-                    completedTaskIds
+                    completedTaskIds,
+                    player.postGame
                 )
             );
 

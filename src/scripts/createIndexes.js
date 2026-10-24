@@ -32,6 +32,18 @@ async function createIndexes() {
             unique: true
         }
     );
+
+    const users = database.collection("users");
+
+    await users.createIndex(
+        {
+            email: 1
+        },
+        {
+            unique: true
+        }
+    );
 }
 
 createIndexes();
+

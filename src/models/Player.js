@@ -1,4 +1,4 @@
-import { BADGES } from "../config/gameConfig.js";
+import { BADGES, DEFAULT_AVATAR_IDS } from "../config/gameConfig.js";
 
 export class Player {
     constructor(
@@ -28,7 +28,11 @@ export class Player {
         position = {
             row: 1,
             col: 1
-        }
+        },
+
+        secretEnding = null,
+        unlockedAvatarIds = [...DEFAULT_AVATAR_IDS]
+
     ) {
         this.id = id;
         this.userId = userId;
@@ -53,6 +57,9 @@ export class Player {
 
         this.currentFloor = currentFloor;
         this.position = position;
+
+        this.secretEnding = secretEnding;
+        this.unlockedAvatarIds = unlockedAvatarIds;
     }
 
     addBadgePoints(badge, amount) {
@@ -133,6 +140,16 @@ export class Player {
         }
 
         this.usedTimeBlocks += amount;
+    }
+
+    unlockAvatar(avatarId) {
+        if (!avatarId) {
+            throw new Error("Avatar id is required");
+        }
+
+        if (!this.unlockedAvatarIds.includes(avatarId)) {
+            this.unlockedAvatarIds.push(avatarId);
+        }
     }
 }
 

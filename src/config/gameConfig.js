@@ -72,3 +72,55 @@ export const NPCS = {
 };
 
 export const FLOORS = [1, 2, 3];
+
+export const MAIN_ENDINGS = [
+  {
+    id: "communication_inclusion_impact",
+    badges: [
+      BADGES.COMMUNICATION,
+      BADGES.INCLUSION,
+      BADGES.IMPACT
+    ]
+  },
+
+  {
+    id: "communication_inclusion_delivery",
+    badges: [
+      BADGES.COMMUNICATION,
+      BADGES.INCLUSION,
+      BADGES.DELIVERY
+    ]
+  },
+
+  {
+    id: "communication_impact_delivery",
+    badges: [
+      BADGES.COMMUNICATION,
+      BADGES.IMPACT,
+      BADGES.DELIVERY
+    ]
+  },
+
+  {
+    id: "inclusion_impact_delivery",
+    badges: [
+      BADGES.INCLUSION,
+      BADGES.IMPACT,
+      BADGES.DELIVERY
+    ]
+  }
+];
+
+export const BADGE_MASTERY_SCORE = 15;
+
+export const SECRET_ENDING = {
+  id: "all_badges_mastered",
+  unlockAvatarId: "avatar-5"
+};
+
+export const DEFAULT_AVATAR_IDS = [
+  "avatar-1",
+  "avatar-2",
+  "avatar-3",
+  "avatar-4"
+];

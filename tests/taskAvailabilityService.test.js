@@ -407,4 +407,96 @@ describe("canStartTask", () => {
             isTaskUnlocked(player, task, [])
         ).toBe(false);
     });
+
+    it("should unlock a previous role task in post-game despite badge requirements", () => {
+        const player = {
+            role: "Junior",
+            postGame: true,
+
+            badgeScores: {
+                communication: 1,
+                inclusion: 0,
+                impact: 10,
+                delivery: 8
+            }
+        };
+
+        const task = {
+            id: "task-old",
+            role: "Intern",
+
+            requirements: {
+                badgeScores: {
+                    inclusion: 10
+                }
+            }
+        };
+
+        expect(
+            isTaskUnlocked(
+                player,
+                task,
+                []
+            )
+        ).toBe(true);
+    });
+
+    it("should still require prerequisite tasks in post-game", () => {
+        const player = {
+            role: "Junior",
+            postGame: true,
+            badgeScores: {}
+        };
+
+        const task = {
+            id: "task-b",
+            role: "Intern Silver",
+
+            requirements: {
+                completedTasks: [
+                    "task-a"
+                ],
+
+                badgeScores: {
+                    communication: 10
+                }
+            }
+        };
+
+        expect(
+            isTaskUnlocked(
+                player,
+                task,
+                []
+            )
+        ).toBe(false);
+    });
+
+    it("should keep completed tasks unavailable in post-game", () => {
+        const player = {
+            role: "Junior",
+            postGame: true,
+            badgeScores: {}
+        };
+
+        const task = {
+            id: "task-1",
+            role: "Intern",
+            requirements: {}
+        };
+
+        const progress = [
+            {
+                taskId: "task-1"
+            }
+        ];
+
+        expect(
+            isTaskUnlocked(
+                player,
+                task,
+                progress
+            )
+        ).toBe(false);
+    });
 });

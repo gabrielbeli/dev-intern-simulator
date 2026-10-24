@@ -25,7 +25,9 @@ function toPlayer(data) {
         data.ending,
         data.postGame,
         data.currentFloor,
-        data.position
+        data.position,
+        data.secretEnding,
+        data.unlockedAvatarIds
     );
 }
 
@@ -70,7 +72,10 @@ export async function savePlayer(player, session = null) {
 
         currentFloor: player.currentFloor,
         position: player.position,
-        exhausted: player.exhausted
+        exhausted: player.exhausted,
+
+        secretEnding: player.secretEnding,
+        unlockedAvatarIds: player.unlockedAvatarIds
     };
 
     if (!player.id) {
