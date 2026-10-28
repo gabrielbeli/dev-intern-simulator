@@ -3,14 +3,21 @@ import cors from "cors";
 import { internRoutes } from "./routes/internRoutes.js";
 import { connectToDatabase } from "./config/database.js";
 import taskRoutes from "./routes/taskRoutes.js";
+import { sessionMiddleware } from "./config/sessionConfig.js";
+import authRoutes from "./routes/authRoutes.js";
 
 const app = express();
 
 app.use(cors({
-  origin: "http://localhost:5173"
+    origin: "http://localhost:5173",
+    credentials: true
 }));
 
 app.use(express.json());
+
+app.use(sessionMiddleware);
+
+app.use("/auth", authRoutes);
 
 app.use("/intern", internRoutes);
 
