@@ -5,6 +5,7 @@ import { connectToDatabase } from "./config/database.js";
 import taskRoutes from "./routes/taskRoutes.js";
 import { sessionMiddleware } from "./config/sessionConfig.js";
 import authRoutes from "./routes/authRoutes.js";
+import profileRoutes from "./routes/profileRoutes.js";
 
 const app = express();
 
@@ -18,6 +19,8 @@ app.use(express.json());
 app.use(sessionMiddleware);
 
 app.use("/auth", authRoutes);
+
+app.use("/profile", profileRoutes);
 
 app.use("/intern", internRoutes);
 

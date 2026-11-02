@@ -50,7 +50,13 @@ export async function savePlayer(player, session = null) {
     const options = session ? { session } : {};
 
     const playerData = {
-        userId: player.userId,
+        userId: player.userId
+            ? (
+                player.userId instanceof ObjectId
+                    ? player.userId
+                    : new ObjectId(player.userId)
+            )
+            : null,
         name: player.name,
         avatarId: player.avatarId,
 
@@ -95,4 +101,16 @@ export async function savePlayer(player, session = null) {
     );
 
     return player;
+}
+
+export async function findPlayerByUserId(userId) {
+    const database = getDatabase();
+
+    const players = database.collection("players");
+
+    const data = await players.findOne({
+        userId: new ObjectId(userId)
+    });
+
+    return toPlayer(data);
 }

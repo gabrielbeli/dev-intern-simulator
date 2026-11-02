@@ -43,6 +43,23 @@ async function createIndexes() {
             unique: true
         }
     );
+
+    const players = database.collection("players");
+
+    await players.createIndex(
+        {
+            userId: 1
+        },
+        {
+            unique: true,
+
+            partialFilterExpression: {
+                userId: {
+                    $type: "objectId"
+                }
+            }
+        }
+    );
 }
 
 createIndexes();
