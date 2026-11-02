@@ -151,5 +151,13 @@ export class Player {
             this.unlockedAvatarIds.push(avatarId);
         }
     }
+
+    changeAvatar(avatarId) {
+        if (!this.unlockedAvatarIds.includes(avatarId)) {
+            throw new Error("Avatar is not unlocked");
+        }
+
+        this.avatarId = avatarId;
+    }
 }
 

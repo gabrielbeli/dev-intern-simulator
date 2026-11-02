@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { findPlayerByUserId, savePlayer } from "../src/repositories/playerRepository.js";
-import { createPlayerProfile, getPlayerProfile } from "../src/services/profileService.js";
+import { createPlayerProfile, getPlayerProfile, changePlayerAvatar } from "../src/services/profileService.js";
 
 vi.mock("../src/repositories/playerRepository.js", () => ({
     findPlayerByUserId: vi.fn(),
@@ -113,5 +113,101 @@ describe("getPlayerProfile", () => {
         ).rejects.toThrow(
             "Player profile not found"
         );
+    });
+});
+
+describe("changePlayerAvatar", () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+
+        savePlayer.mockResolvedValue(undefined);
+    });
+
+    it("should change and persist an unlocked avatar", async () => {
+        const player = {
+            avatarId: "avatar-1",
+
+            unlockedAvatarIds: [
+                "avatar-1",
+                "avatar-2",
+                "avatar-3",
+                "avatar-4"
+            ],
+
+            changeAvatar(avatarId) {
+                if (!this.unlockedAvatarIds.includes(avatarId)) {
+                    throw new Error("Avatar is not unlocked");
+                }
+
+                this.avatarId = avatarId;
+            }
+        };
+
+        findPlayerByUserId.mockResolvedValue(player);
+
+        const result = await changePlayerAvatar(
+            "user-1",
+            "avatar-3"
+        );
+
+        expect(result.avatarId).toBe("avatar-3");
+
+        expect(
+            findPlayerByUserId
+        ).toHaveBeenCalledWith("user-1");
+
+        expect(savePlayer).toHaveBeenCalledWith(
+            player
+        );
+    });
+
+    it("should reject changing to a locked avatar", async () => {
+        const player = {
+            avatarId: "avatar-1",
+
+            unlockedAvatarIds: [
+                "avatar-1",
+                "avatar-2",
+                "avatar-3",
+                "avatar-4"
+            ],
+
+            changeAvatar(avatarId) {
+                if (!this.unlockedAvatarIds.includes(avatarId)) {
+                    throw new Error("Avatar is not unlocked");
+                }
+
+                this.avatarId = avatarId;
+            }
+        };
+
+        findPlayerByUserId.mockResolvedValue(player);
+
+        await expect(
+            changePlayerAvatar(
+                "user-1",
+                "avatar-5"
+            )
+        ).rejects.toThrow(
+            "Avatar is not unlocked"
+        );
+
+        expect(player.avatarId).toBe("avatar-1");
+        expect(savePlayer).not.toHaveBeenCalled();
+    });
+
+    it("should reject when the user has no player profile", async () => {
+        findPlayerByUserId.mockResolvedValue(null);
+
+        await expect(
+            changePlayerAvatar(
+                "user-1",
+                "avatar-2"
+            )
+        ).rejects.toThrow(
+            "Player profile not found"
+        );
+
+        expect(savePlayer).not.toHaveBeenCalled();
     });
 });

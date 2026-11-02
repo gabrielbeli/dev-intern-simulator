@@ -48,3 +48,20 @@ export async function getPlayerProfile(userId) {
 
     return player;
 }
+
+export async function changePlayerAvatar(
+    userId,
+    avatarId
+) {
+    const player = await findPlayerByUserId(userId);
+
+    if (!player) {
+        throw new Error("Player profile not found");
+    }
+
+    player.changeAvatar(avatarId);
+
+    await savePlayer(player);
+
+    return player;
+}

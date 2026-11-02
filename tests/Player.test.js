@@ -240,3 +240,31 @@ it("should unlock a new avatar without duplicates", () => {
         )
     ).toHaveLength(1);
 });
+
+it("should change to an unlocked avatar", () => {
+    const player = new Player(
+        "player-1",
+        null,
+        "Gabriel",
+        "avatar-1"
+    );
+
+    player.changeAvatar("avatar-3");
+
+    expect(player.avatarId).toBe("avatar-3");
+});
+
+it("should reject changing to a locked avatar", () => {
+    const player = new Player(
+        "player-1",
+        null,
+        "Gabriel",
+        "avatar-1"
+    );
+
+    expect(() => {
+        player.changeAvatar("avatar-5");
+    }).toThrow("Avatar is not unlocked");
+
+    expect(player.avatarId).toBe("avatar-1");
+}); 

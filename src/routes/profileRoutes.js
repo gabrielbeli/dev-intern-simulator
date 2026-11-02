@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createProfile, getProfile } from "../controllers/profileController.js";
+import { createProfile, getProfile, updateAvatar } from "../controllers/profileController.js";
 import { requireAuth } from "../middlewares/requireAuth.js";
 
 const router = Router();
@@ -14,6 +14,12 @@ router.get(
     "/",
     requireAuth,
     getProfile
+);
+
+router.patch(
+  "/avatar",
+  requireAuth,
+  updateAvatar
 );
 
 export default router;

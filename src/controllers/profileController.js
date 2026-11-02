@@ -1,4 +1,4 @@
-import { createPlayerProfile, getPlayerProfile } from "../services/profileService.js";
+import { createPlayerProfile, getPlayerProfile, changePlayerAvatar } from "../services/profileService.js";
 
 export async function createProfile(req, res) {
     try {
@@ -53,6 +53,43 @@ export async function getProfile(req, res) {
         if (
             error.message ===
             "Player profile not found"
+        ) {
+            return res.status(404).json({
+                error: error.message
+            });
+        }
+
+        console.error(error);
+
+        return res.status(500).json({
+            error: "Internal server error"
+        });
+    }
+}
+
+export async function updateAvatar(req, res) {
+    try {
+        const { avatarId } = req.body;
+
+        const player = await changePlayerAvatar(
+            req.session.userId,
+            avatarId
+        );
+
+        return res.status(200).json({
+            player
+        });
+    } catch (error) {
+        if (
+            error.message === "Avatar is not unlocked"
+        ) {
+            return res.status(403).json({
+                error: error.message
+            });
+        }
+
+        if (
+            error.message === "Player profile not found"
         ) {
             return res.status(404).json({
                 error: error.message

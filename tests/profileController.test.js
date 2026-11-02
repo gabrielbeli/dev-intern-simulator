@@ -1,10 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { createPlayerProfile, getPlayerProfile } from "../src/services/profileService.js";
-import { createProfile, getProfile } from "../src/controllers/profileController.js";
+import { createPlayerProfile, getPlayerProfile, changePlayerAvatar } from "../src/services/profileService.js";
+import { createProfile, getProfile, updateAvatar } from "../src/controllers/profileController.js";
 
 vi.mock("../src/services/profileService.js", () => ({
     createPlayerProfile: vi.fn(),
-    getPlayerProfile: vi.fn()
+    getPlayerProfile: vi.fn(),
+    changePlayerAvatar: vi.fn()
 }));
 
 function createResponse() {
@@ -61,3 +62,65 @@ describe("profileController", () => {
         });
     });
 })
+
+it("should update the authenticated player's avatar", async () => {
+    const player = {
+        id: "player-1",
+        avatarId: "avatar-3"
+    };
+
+    changePlayerAvatar.mockResolvedValue(player);
+
+    const req = {
+        session: {
+            userId: "user-1"
+        },
+
+        body: {
+            avatarId: "avatar-3"
+        }
+    };
+
+    const res = createResponse();
+
+    await updateAvatar(req, res);
+
+    expect(
+        changePlayerAvatar
+    ).toHaveBeenCalledWith(
+        "user-1",
+        "avatar-3"
+    );
+
+    expect(res.status).toHaveBeenCalledWith(200);
+
+    expect(res.json).toHaveBeenCalledWith({
+        player
+    });
+});
+
+it("should return 403 when the avatar is locked", async () => {
+    changePlayerAvatar.mockRejectedValue(
+        new Error("Avatar is not unlocked")
+    );
+
+    const req = {
+        session: {
+            userId: "user-1"
+        },
+
+        body: {
+            avatarId: "avatar-5"
+        }
+    };
+
+    const res = createResponse();
+
+    await updateAvatar(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(403);
+
+    expect(res.json).toHaveBeenCalledWith({
+        error: "Avatar is not unlocked"
+    });
+});

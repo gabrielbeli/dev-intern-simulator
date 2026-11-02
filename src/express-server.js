@@ -6,6 +6,7 @@ import taskRoutes from "./routes/taskRoutes.js";
 import { sessionMiddleware } from "./config/sessionConfig.js";
 import authRoutes from "./routes/authRoutes.js";
 import profileRoutes from "./routes/profileRoutes.js";
+import gameplayRoutes from "./routes/gameplayRoutes.js";
 
 const app = express();
 
@@ -25,6 +26,8 @@ app.use("/profile", profileRoutes);
 app.use("/intern", internRoutes);
 
 app.use("/tasks", taskRoutes);
+
+app.use( "/game", gameplayRoutes);
 
 async function startServer() {
     try {
